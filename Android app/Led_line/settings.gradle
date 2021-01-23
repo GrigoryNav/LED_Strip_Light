@@ -1,0 +1,2 @@
+rootProject.name='Led_line_app'
+include ':app'
