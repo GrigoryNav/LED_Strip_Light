@@ -17,7 +17,7 @@ public class BluetoothConnect {
     BluetoothSocket btSocket;
     OutputStream outputStream;
     String address;
-
+    public BluetoothConnect(   ){}
     public BluetoothConnect( BluetoothDevice btDevice,String address1  ){ //"98:D3:61:F9:57:97" hc-06 address
         address=address1;
         bluetoothDevice=btDevice;
