@@ -33,5 +33,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Mode.class);
         startActivity(intent);
     }
-
+    public void settingsButton (View view){
+        Intent intent = new Intent(MainActivity.this, Settings.class);
+        startActivity(intent);
+    }
 }

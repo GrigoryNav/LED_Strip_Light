@@ -1,4 +1,4 @@
-char Incoming_value = 0;
+#include "String.h"
 // Подключаем библиотеку Adafruit NeoPixel.
 #include "Adafruit_NeoPixel.h"
  
@@ -21,32 +21,115 @@ void setup()
  
 void loop()
 {
+  int Incoming_value;
   
   if( Serial.available()>0 ){
-    strip.begin();
-    Incoming_value=Serial.read();
     
-      if( Incoming_value == '1' ){
-        digitalWrite(2,HIGH);
-        blink_1();
+    strip.begin();
+    Incoming_value= Serial.parseInt(); 
+    /*
+     * Incoming_value = 1234...
+     * 1-menu item
+     * 2-selected button
+     * 3,4-brightness
+     * ... others
+    */
+    
+    switch( define_left_num(Incoming_value) ){
+      case 1:{
+        //Serial.print( "loop() case1 Incoming_value = " );
+        //Serial.println(Incoming_value);
+        
+        mode(delete_left_num(Incoming_value));
+        break;
       }
-      if( Incoming_value == '2' ){
-        digitalWrite(2,LOW);
-        blink_2();
-      }
-      if( Incoming_value == '3' ){
-        blink_3();
-      }
+      
+    }
+
+
+      
   }
+  
+  
+}
+
+void mode(int Incoming_value_mode){
+  /*
+     * Incoming_value_mode = 234...
+     * 2-selected button
+     * 3,4-brightness
+     * ... others
+    */
+    switch( define_left_num(Incoming_value_mode) ){
+      case 1:{
+        //Serial.print( "mode() case1 Incoming_value_mode = " );
+        //Serial.println(Incoming_value_mode);
+        blink_1(delete_left_num(Incoming_value_mode) );  
+        break;
+      }
+      case 2:{
+        //Serial.print( "mode() case2 Incoming_value_mode = " );
+        //Serial.println(Incoming_value_mode);
+        blink_2(delete_left_num(Incoming_value_mode) );  
+        break;
+      }
+      case 3:{
+        //Serial.print( "mode() case3 Incoming_value_mode = " );
+        //Serial.println(Incoming_value_mode);
+        blink_3(delete_left_num(Incoming_value_mode) );  
+        break;
+      }
+    }
   
 }
 
 
-void blink_1()  
+int define_left_num(int x){
+  int n = check_size(x);
+  for(int i=0;i<(n-1);i++)
+    x /= 10 ;
+  return x;  
+}
+
+int delete_left_num(int x){
+  int x_cpy = x;
+  int n = check_size(x);
+
+  for(int i=0;i<(n-1);i++)
+    x_cpy /=10;
+  for(int i=0;i<(n-1);i++)
+    x_cpy *=10;
+  
+  
+  return (x-x_cpy);
+}
+
+int check_size(int x){
+  int i=0;
+  while(x>0){
+    x/=10;
+    i++;
+  }
+  return i;
+}
+
+void blink_1(int brightness)  
 {
+  /*пример
+   * brightness = 99
+   * col_br = 2.55
+   * brightness *= col_br получим значение яркости 99*2.55 = 252
+  */
+  strip.begin();
+  int n =100; 
+  double col_br = 255/n;
+  brightness *= col_br;
+
+  //Serial.println( "blink_1()" );
+  
   for (int i = 0; i <= LED_COUNT; i++)
   {
-    strip.setPixelColor(i, strip.Color(200, 0, 0));  
+    strip.setPixelColor(i, strip.Color(brightness, 0, 0));  
     // Передаем цвета ленте.
     strip.show();
     delay(25);
@@ -54,7 +137,7 @@ void blink_1()
   // Выключаем все светодиоды.
   for (int i = LED_COUNT; i >= 0; i--)
   {
-    strip.setPixelColor(i, strip.Color(0, 200, 0)); // Черный цвет, т.е. выключено.
+    strip.setPixelColor(i, strip.Color(brightness,0,brightness)); // Черный цвет, т.е. выключено.
     // Передаем цвета ленте.
     strip.show();
     delay(25);
@@ -62,12 +145,19 @@ void blink_1()
   
 }
 
-void blink_2()  
+void blink_2(int brightness)  
 {
+  //Serial.print( "blink_2()" );
+  strip.begin();
+  int n =100; 
+  double col_br = 255/n;
+  brightness *= col_br;
+
+  //Serial.println( brightness );
   
   for (int i = 0; i <= LED_COUNT; i++)
   {
-    strip.setPixelColor(i, strip.Color(100, 100, 0));  
+    strip.setPixelColor(i, strip.Color(brightness, 0, brightness));  
     // Передаем цвета ленте.
     strip.show();
     delay(25);
@@ -75,7 +165,7 @@ void blink_2()
   // Выключаем все светодиоды.
   for (int i = LED_COUNT; i >= 0; i--)
   {
-    strip.setPixelColor(i, strip.Color(100, 0, 100)); // Черный цвет, т.е. выключено.
+    strip.setPixelColor(i, strip.Color(brightness,0,0)); // Черный цвет, т.е. выключено.
     // Передаем цвета ленте.
     strip.show();
     delay(25);
@@ -83,12 +173,18 @@ void blink_2()
   
 }
 
-void blink_3()  
+void blink_3(int brightness)  
 {
+  //Serial.println( "blink_3()" );
+  strip.begin();
+  int n =100; 
+  double col_br = 255/n;
+  brightness *= col_br;
+
   
   for (int i = 0; i <= LED_COUNT; i++)
   {
-    strip.setPixelColor(i, strip.Color(0, 0, 200));  
+    strip.setPixelColor(i, strip.Color(brightness, 0, 0));  
     // Передаем цвета ленте.
     strip.show();
     delay(25);
@@ -96,7 +192,7 @@ void blink_3()
   // Выключаем все светодиоды.
   for (int i = LED_COUNT; i >= 0; i--)
   {
-    strip.setPixelColor(i, strip.Color(100, 100, 0)); // Черный цвет, т.е. выключено.
+    strip.setPixelColor(i, strip.Color(0,0,brightness)); // Черный цвет, т.е. выключено.
     // Передаем цвета ленте.
     strip.show();
     delay(25);
