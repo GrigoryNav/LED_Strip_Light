@@ -32,10 +32,11 @@
             android:text="mode" />
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/mode_button_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:onClick="modButton2"
+            android:text="MODE2" />
     </LinearLayout>
 
     <Button

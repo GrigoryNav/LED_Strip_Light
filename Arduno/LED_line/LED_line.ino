@@ -17,16 +17,17 @@ void setup()
   
   Serial.begin(9600); 
   pinMode(2,OUTPUT);
+
+  
 }
  
 void loop()
 {
-  int Incoming_value;
   
   if( Serial.available()>0 ){
     
     strip.begin();
-    Incoming_value= Serial.parseInt(); 
+    int Incoming_value= Serial.parseInt(); 
     /*
      * Incoming_value = 1234...
      * 1-menu item
@@ -43,15 +44,22 @@ void loop()
         mode(delete_left_num(Incoming_value));
         break;
       }
-      
+      case 2:{
+        //Serial.print( "loop() case1 Incoming_value = " );
+        //Serial.println(Incoming_value);
+        
+        mode_2(delete_left_num(Incoming_value));
+        break;
+      }
     }
-
-
       
   }
   
   
 }
+
+
+
 
 void mode(int Incoming_value_mode){
   /*
@@ -70,19 +78,38 @@ void mode(int Incoming_value_mode){
       case 2:{
         //Serial.print( "mode() case2 Incoming_value_mode = " );
         //Serial.println(Incoming_value_mode);
-        blink_2(delete_left_num(Incoming_value_mode) );  
+        //blink_2(delete_left_num(Incoming_value_mode) );  
+        blink_2( delete_left_num(Incoming_value_mode) );
         break;
       }
       case 3:{
         //Serial.print( "mode() case3 Incoming_value_mode = " );
         //Serial.println(Incoming_value_mode);
-        blink_3(delete_left_num(Incoming_value_mode) );  
+        
+        blink_3( delete_left_num(Incoming_value_mode) );  
         break;
       }
     }
   
 }
-
+void mode_2(int Incoming_value_mode){
+  /*
+     * Incoming_value_mode = 234...
+     * 2-selected button
+     * 3,4-brightness
+     * ... others
+    */
+    switch( define_left_num(Incoming_value_mode) ){
+      case 1:{
+        //Serial.print( "mode() case1 Incoming_value_mode = " );
+        //Serial.println(Incoming_value_mode);
+        mode_2_blink_1(delete_left_num(Incoming_value_mode) );  
+        break;
+      }
+      
+    }
+  
+}
 
 int define_left_num(int x){
   int n = check_size(x);
@@ -198,4 +225,29 @@ void blink_3(int brightness)
     delay(25);
   }
   
+}
+
+void mode_2_blink_1(int brightness)  
+{
+  //Serial.println( "blink_3()" );
+  strip.begin();
+  int n =100; 
+  double col_br = 255/n;
+  brightness *= col_br;
+
+    for (int i = 0; i <= LED_COUNT; i++)
+    {
+      strip.setPixelColor(i, (i%2==0)?strip.Color(brightness, brightness, brightness):strip.Color(0,0, brightness) );  
+      // Передаем цвета ленте.
+      strip.show();
+      delay(10);
+    }
+    for (int i = 0; i <= LED_COUNT; i++)
+    {
+      strip.setPixelColor(i, (i%2==0)?strip.Color(0,0, brightness):strip.Color(brightness, brightness, brightness) );  
+      // Передаем цвета ленте.
+      strip.show();
+      delay(10);
+    }
+
 }
